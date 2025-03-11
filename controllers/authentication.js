@@ -67,5 +67,9 @@ const Login = async (req, res) => {
     }
 };
 
+const Users = async(req,res)=>{
+    return res.send({message:"hello i have got this message"})
+}
 
-module.exports = { Register, Login }
+
+module.exports = { Register, Login ,Users}
