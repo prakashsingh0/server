@@ -15,18 +15,29 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - name: Fix Permissions
+      run: sudo chown -R $USER:$USER /home/admin/actions-runner/_agresen/server || true
+
     - uses: actions/checkout@v4
+      with:
+        clean: false # Prevents checkout from deleting node_modules
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
+    - name: Ensure Correct Permissions on node_modules
+      run: sudo chmod -R 777 node_modules || true
+
     - run: npm ci
+
     - run: |
-           touch .env
-           echo "$({secrets.PROD})" > .env
+        touch .env
+        echo "$({secrets.PROD})" > .env
+
     - run: pm2 restart agresenBackend
-   
+
